@@ -1,27 +1,32 @@
+import java.util.Map;
+
 public class BookMyStayApp {
 
     public static void main(String[] args) {
-
-        System.out.println("Hotel Room Initialization\n");
 
         Room singleRoom = new SingleRoom();
         Room doubleRoom = new DoubleRoom();
         Room suiteRoom = new SuiteRoom();
 
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        RoomInventory inventory = new RoomInventory();
+
+        System.out.println("Hotel Room Inventory\n");
 
         System.out.println("Single Room:");
         singleRoom.displayRoomDetails();
-        System.out.println("Available: " + singleAvailable);
+        System.out.println("Available: " + inventory.getRoomAvailability().get("Single Room"));
 
         System.out.println("\nDouble Room:");
         doubleRoom.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailable);
+        System.out.println("Available: " + inventory.getRoomAvailability().get("Double Room"));
 
         System.out.println("\nSuite Room:");
         suiteRoom.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailable);
+        System.out.println("Available: " + inventory.getRoomAvailability().get("Suite Room"));
+
+        inventory.updateAvailability("Single Room", 4);
+
+        System.out.println("\nUpdated Single Room Availability: " +
+                inventory.getRoomAvailability().get("Single Room"));
     }
 }
