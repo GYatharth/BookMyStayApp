@@ -1,66 +1,57 @@
 import java.util.*;
 
-class AddOnService {
+class Reservation {
 
-    private String serviceName;
-    private double cost;
+    private String guestName;
+    private String roomType;
 
-    public AddOnService(String serviceName, double cost) {
-        this.serviceName = serviceName;
-        this.cost = cost;
+    public Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public String getGuestName() {
+        return guestName;
     }
 
-    public double getCost() {
-        return cost;
+    public String getRoomType() {
+        return roomType;
     }
 }
 
-class AddOnServiceManager {
+class BookingHistory {
 
-    private Map<String, List<AddOnService>> servicesByReservation;
+    private List<Reservation> confirmedReservations;
 
-    public AddOnServiceManager() {
-        servicesByReservation = new HashMap<>();
+    public BookingHistory() {
+        confirmedReservations = new ArrayList<>();
     }
 
-    public void addService(String reservationId, AddOnService service) {
-
-        servicesByReservation
-                .computeIfAbsent(reservationId, k -> new ArrayList<>())
-                .add(service);
+    public void addReservation(Reservation reservation) {
+        confirmedReservations.add(reservation);
     }
 
-    public double calculateTotalServiceCost(String reservationId) {
-
-        List<AddOnService> services = servicesByReservation.get(reservationId);
-
-        if (services == null) return 0;
-
-        double total = 0;
-
-        for (AddOnService s : services) {
-            total += s.getCost();
-        }
-
-        return total;
+    public List<Reservation> getConfirmedReservations() {
+        return confirmedReservations;
     }
+}
 
-    public void displayServices(String reservationId) {
+class BookingReportService {
 
-        List<AddOnService> services = servicesByReservation.get(reservationId);
+    public void generateReport(BookingHistory history) {
 
-        if (services == null) {
-            System.out.println("No services added.");
-            return;
+        List<Reservation> reservations = history.getConfirmedReservations();
+
+        System.out.println("Booking Report:\n");
+
+        for (Reservation r : reservations) {
+            System.out.println(
+                    "Guest: " + r.getGuestName() +
+                            " | Room Type: " + r.getRoomType()
+            );
         }
 
-        for (AddOnService s : services) {
-            System.out.println(s.getServiceName() + " - " + s.getCost());
-        }
+        System.out.println("\nTotal Bookings: " + reservations.size());
     }
 }
 
@@ -68,25 +59,15 @@ public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Add-On Service Selection\n");
+        System.out.println("Booking History & Reporting\n");
 
-        AddOnServiceManager manager = new AddOnServiceManager();
+        BookingHistory history = new BookingHistory();
+        BookingReportService reportService = new BookingReportService();
 
-        String reservationId = "R101";
+        history.addReservation(new Reservation("Abhi", "Single"));
+        history.addReservation(new Reservation("Subha", "Double"));
+        history.addReservation(new Reservation("Vanmathi", "Suite"));
 
-        AddOnService s1 = new AddOnService("Breakfast", 200);
-        AddOnService s2 = new AddOnService("Airport Pickup", 500);
-        AddOnService s3 = new AddOnService("Extra Bed", 300);
-
-        manager.addService(reservationId, s1);
-        manager.addService(reservationId, s2);
-        manager.addService(reservationId, s3);
-
-        System.out.println("Services for Reservation " + reservationId + ":");
-        manager.displayServices(reservationId);
-
-        double total = manager.calculateTotalServiceCost(reservationId);
-
-        System.out.println("\nTotal Add-On Cost: " + total);
+        reportService.generateReport(history);
     }
 }
